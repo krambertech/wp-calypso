@@ -145,11 +145,11 @@ export function requests( state = {}, action ) {
 export function totalCommentsCount( state = {}, action ) {
 	switch ( action.type ) {
 		case COMMENTS_COUNT_RECEIVE:
-			const { siteId, postId, totalCommentsCount } = action;
+			const { siteId, postId } = action;
 			return {
 				...state,
-				[ `${ siteId }-${ postId }` ]: totalCommentsCount
-			}
+				[ `${ siteId }-${ postId }` ]: action.totalCommentsCount
+			};
 	}
 
 	return state;
