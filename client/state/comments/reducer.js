@@ -20,6 +20,8 @@ import {
 	COMMENTS_REQUEST,
 	COMMENTS_REQUEST_SUCCESS,
 	COMMENTS_REQUEST_FAILURE,
+	DESERIALIZE,
+	SERIALIZE
 } from '../action-types';
 import {
 	PLACEHOLDER_STATE
@@ -106,6 +108,9 @@ export function items( state = {}, action ) {
 					placeholderError: error
 				} ) )
 			};
+		case SERIALIZE:
+		case DESERIALIZE:
+			return {};
 	}
 
 	return state;
@@ -131,6 +136,9 @@ export function requests( state = {}, action ) {
 					[ requestId ]: type
 				}
 			};
+		case SERIALIZE:
+		case DESERIALIZE:
+			return {};
 	}
 
 	return state;
@@ -150,6 +158,9 @@ export function totalCommentsCount( state = {}, action ) {
 				...state,
 				[ `${ siteId }-${ postId }` ]: action.totalCommentsCount
 			};
+		case SERIALIZE:
+		case DESERIALIZE:
+			return {};
 	}
 
 	return state;
