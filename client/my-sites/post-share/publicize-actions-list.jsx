@@ -22,25 +22,35 @@ import {
 	SCHEDULED,
 	PUBLISHED,
 } from './constants';
+import SectionNav from 'components/section-nav';
+import NavTabs from 'components/section-nav/tabs';
+import NavItem from 'components/section-nav/item';
 
 class PublicizeActionsList extends PureComponent {
 	static propTypes = {
-		section: PropTypes.string,
 		siteId: PropTypes.number,
 		postId: PropTypes.number,
 	};
 
 	static defaultProps = {
-		section: SCHEDULED,
+		publishedActions: [],
+		scheduledActions: [],
 	};
 
-	renderFooterSectionItem( {
+	state = {
+		currentSection: SCHEDULED,
+	};
+
+	setSection = currentSection => () => this.setState( { currentSection } );
+
+	renderActionItem( {
 		connectionName,
 		message,
 		shareDate,
 		service,
 	}, index ) {
 		const { translate } = this.props;
+
 		return (
 			<CompactCard className="post-share__footer-items" key={ index }>
 				<div className="post-share__footer-item">
@@ -76,11 +86,7 @@ class PublicizeActionsList extends PureComponent {
 		);
 	}
 
-	renderActionsList( status = SCHEDULED ) {
-		if ( this.props.section !== status ) {
-			return null;
-		}
-
+	renderActionsList() {
 		const {
 			postId,
 			scheduledActions,
@@ -88,25 +94,48 @@ class PublicizeActionsList extends PureComponent {
 			siteId,
 		} = this.props;
 
+		const status = this.state.currentSection;
 		const actions = status === SCHEDULED ? scheduledActions : publishedActions;
 
 		return (
 			<div>
 				<QuerySharePostActions siteId={ siteId } postId={ postId } status={ status } />
-				{ actions.map( ( item, index ) => this.renderFooterSectionItem( item, index ) ) }
+				{ actions.map( ( item, index ) => this.renderActionItem( item, index ) ) }
 			</div>
 		);
 	}
 
 	render() {
+		const { currentSection } = this.state;
+		const {
+			scheduledActions,
+			publishedActions,
+		} = this.props;
+
 		return (
 			<div className="post-share__actions-list">
-				<div className="post-share__scheduled-list">
-					{ this.renderActionsList( SCHEDULED ) }
-				</div>
+				<SectionNav className="post-share__footer-nav" selectedText={ 'some text' }>
+					<NavTabs label="Status" selectedText="Published">
+						<NavItem
+							selected={ currentSection === SCHEDULED }
+							count={ scheduledActions.length }
+							onClick={ this.setSection( SCHEDULED ) }
+						>
+							{ this.props.translate( 'Scheduled' ) }
+						</NavItem>
 
-				<div className="post-share__published-list">
-					{ this.renderActionsList( PUBLISHED ) }
+						<NavItem
+							selected={ currentSection === PUBLISHED }
+							count={ publishedActions.length }
+							onClick={ this.setSection( PUBLISHED ) }
+						>
+							{ this.props.translate( 'Published' ) }
+						</NavItem>
+					</NavTabs>
+				</SectionNav>
+
+				<div className="post-share__actions-list">
+					{ this.renderActionsList() }
 				</div>
 			</div>
 		);
