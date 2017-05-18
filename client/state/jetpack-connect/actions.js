@@ -3,6 +3,7 @@
  */
 const debug = require( 'debug' )( 'calypso:jetpack-connect:actions' );
 import pick from 'lodash/pick';
+import omit from 'lodash/omit';
 import page from 'page';
 
 /**
@@ -34,8 +35,11 @@ import {
 	JETPACK_CONNECT_SSO_VALIDATION_REQUEST,
 	JETPACK_CONNECT_SSO_VALIDATION_SUCCESS,
 	JETPACK_CONNECT_SSO_VALIDATION_ERROR,
-	SITES_RECEIVE
+	SITE_REQUEST_FAILURE,
+	SITE_REQUEST_SUCCESS,
 } from 'state/action-types';
+import { getSites } from 'state/selectors';
+import { receiveSite, receiveSites } from 'state/sites/actions';
 import userFactory from 'lib/user';
 import config from 'config';
 import addQueryArgs from 'lib/route/add-query-args';
@@ -316,7 +320,7 @@ export default {
 		};
 	},
 	authorize( queryObject ) {
-		return ( dispatch ) => {
+		return ( dispatch, getState ) => {
 			const { _wp_nonce, client_id, redirect_uri, scope, secret, state } = queryObject;
 			debug( 'Trying Jetpack login.', _wp_nonce, redirect_uri, scope, state );
 			tracksEvent( dispatch, 'calypso_jpc_authorize' );
@@ -348,25 +352,24 @@ export default {
 				} );
 				// Update the user now that we are fully connected.
 				userFactory().fetch();
-				return wpcom.me().sites( { site_visibility: 'all', include_domain_only: true } );
+
+				const _sites = getSites( getState() );
+				// Fetch all sites if not already there.
+				// Fetch single site if sites already there.
+				if ( _sites.length ) {
+					debug( 'Requesting single site: %d', _sites.length );
+					return requestSingleSiteForJetpackConnect( dispatch, client_id );
+				}
+				if ( ! _sites.length ) {
+					debug( 'Requesting all sites: %d', _sites.length );
+					return requestSitesForJetpackConnect( dispatch );
+				}
 			} )
 			.then( ( data ) => {
 				tracksEvent( dispatch, 'calypso_jpc_auth_sitesrefresh', {
 					site: client_id
 				} );
 				debug( 'Sites list updated!', data );
-				dispatch( {
-					type: SITES_RECEIVE,
-					sites: data.sites
-				} );
-				dispatch( {
-					type: JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
-					data: data
-				} );
-				Dispatcher.handleViewAction( {
-					type: JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
-					data: data
-				} );
 			} )
 			.catch( ( error ) => {
 				debug( 'Authorize error', error );
@@ -458,3 +461,62 @@ export default {
 		};
 	}
 };
+
+/**
+ * Request sites in a simillar way to state/sites/actions#requestSites
+ * but also dispatching JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST actions
+ * that are specific to Jetpack Connect
+ *
+ * @param  {Function} dispatch redux action dispatcher
+ * @return {Function}          Action thunk
+ */
+function requestSitesForJetpackConnect( dispatch ) {
+	return wpcom.me().sites( { site_visibility: 'all', include_domain_only: true } )
+		.then( data => {
+			receiveSites( data.sites );
+			dispatch( {
+				type: JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
+				data: data
+			} );
+			Dispatcher.handleViewAction( {
+				type: JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
+				data: data
+			} );
+			return data;
+		} );
+}
+
+/**
+ * Request a single site in a simillar way to state/sites/actions#requestSite
+ * but also dispatching JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST actions
+ * that are specific to Jetpack Connect
+ *
+ * @param  {Function} dispatch redux action dispatcher
+ * @param  {Number}   siteId Site ID
+ * @return {Function} Action thunk
+ */
+function requestSingleSiteForJetpackConnect( dispatch, siteId ) {
+	return wpcom.site( siteId ).get()
+		.then( site => {
+			dispatch( receiveSite( omit( site, '_headers' ) ) );
+			dispatch( {
+				type: SITE_REQUEST_SUCCESS,
+				siteId
+			} );
+			dispatch( {
+				type: JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
+				data: {}
+			} );
+			Dispatcher.handleViewAction( {
+				type: JETPACK_CONNECT_AUTHORIZE_RECEIVE_SITE_LIST,
+				data: {}
+			} );
+			return {};
+		} ).catch( ( error ) => {
+			dispatch( {
+				type: SITE_REQUEST_FAILURE,
+				siteId,
+				error
+			} );
+		} );
+}
