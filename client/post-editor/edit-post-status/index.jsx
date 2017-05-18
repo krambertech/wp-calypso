@@ -42,6 +42,7 @@ export class EditPostStatus extends Component {
 		onPrivatePublish: PropTypes.func,
 		status: PropTypes.string,
 		isPostPrivate: PropTypes.bool,
+		toggleNestedSidebar: PropTypes.func,
 	};
 
 	constructor( props ) {
@@ -187,6 +188,7 @@ export class EditPostStatus extends Component {
 				<Revisions
 					revisions={ this.props.post && this.props.post.revisions }
 					adminUrl={ adminUrl }
+					toggleNestedSidebar={ this.props.toggleNestedSidebar }
 				/>
 			</div>
 		);

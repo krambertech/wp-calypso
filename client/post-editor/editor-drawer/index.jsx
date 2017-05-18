@@ -82,6 +82,7 @@ const EditorDrawer = React.createClass( {
 		setPostDate: React.PropTypes.func,
 		onSave: React.PropTypes.func,
 		isPostPrivate: React.PropTypes.bool,
+		toggleNestedSidebar: React.PropTypes.func,
 	},
 
 	onExcerptChange: function( event ) {
@@ -330,6 +331,7 @@ const EditorDrawer = React.createClass( {
 					site={ this.props.site }
 					status={ postStatus }
 					isPostPrivate={ this.props.isPostPrivate }
+					toggleNestedSidebar={ this.props.toggleNestedSidebar }
 				/>
 			</Accordion>
 		);
