@@ -354,4 +354,12 @@ sections.push( {
 	secondary: true
 } );
 
+sections.push( {
+	name: 'preview',
+	paths: [ '/preview' ],
+	module: 'my-sites/preview',
+	group: 'sites',
+	secondary: true
+} );
+
 module.exports = sections;
