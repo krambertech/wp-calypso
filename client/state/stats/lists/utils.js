@@ -679,7 +679,7 @@ export const normalizers = {
 	},
 
 	statsOrders( payload ) {
-		return parseChartData( payload );
+		return parseChartData( payload && payload.orders );
 	},
 
 	/*
