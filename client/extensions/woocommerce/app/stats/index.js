@@ -11,7 +11,7 @@ import { localize } from 'i18n-calypso';
 import Main from 'components/main';
 import StatsNavigation from './stats-navigation';
 import QuerySiteStats from 'components/data/query-site-stats';
-import { getSelectedSiteId, getSelectedSiteSlug } from 'state/ui/selectors';
+import { getSelectedSiteId } from 'state/ui/selectors';
 
 class Stats extends Component {
 	createQuery( unit ) {
@@ -22,7 +22,7 @@ class Stats extends Component {
 		};
 	}
 	render() {
-		const { siteId, unit, slug } = this.props;
+		const { siteId, unit } = this.props;
 		return (
 			<Main className="woocommerce stats" wideLayout={ true }>
 				{ siteId && <QuerySiteStats
@@ -30,7 +30,7 @@ class Stats extends Component {
 					statType="statsOrders"
 					query={ this.createQuery( unit ) }
 				/> }
-				<StatsNavigation unit={ unit } slug={ slug } type="orders" />
+				<StatsNavigation unit={ unit } type="orders" />
 			</Main>
 		);
 	}
@@ -42,7 +42,6 @@ export default connect(
 	state => {
 		return {
 			siteId: getSelectedSiteId( state ),
-			slug: getSelectedSiteSlug( state ),
 		};
 	}
 )( localizedStats );
