@@ -750,8 +750,3 @@ export const normalizers = {
 		} );
 	}
 };
-
-normalizers.statsOrders = payload => {
-	return normalizers.statsVisits( payload.orders );
-};
-
