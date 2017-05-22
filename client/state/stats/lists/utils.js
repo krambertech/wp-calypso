@@ -624,14 +624,9 @@ export const normalizers = {
 			return [];
 		}
 
-		const attributes = [ 'visits', 'likes', 'visitors', 'comments', 'posts' ];
-
 		return payload.data.map( function( record ) {
 			// Initialize data
-			const dataRecord = attributes.reduce( ( memo, attribute ) => {
-				memo[ attribute ] = null;
-				return memo;
-			}, {} );
+			const dataRecord = {};
 
 			// Fill Field Values
 			record.forEach( function( value, i ) {
@@ -735,3 +730,8 @@ export const normalizers = {
 		} );
 	}
 };
+
+normalizers.statsOrders = payload => {
+	return normalizers.statsVisits( payload.orders );
+};
+

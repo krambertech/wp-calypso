@@ -10,27 +10,21 @@ import { localize } from 'i18n-calypso';
  */
 import Main from 'components/main';
 import StatsNavigation from './stats-navigation';
-import QuerySiteStats from 'components/data/query-site-stats';
 import { getSelectedSiteId } from 'state/ui/selectors';
+import StatsChart from './stats-chart';
 
 class Stats extends Component {
-	createQuery( unit ) {
-		return {
+	render() {
+		const { siteId, unit } = this.props;
+		const chartQuery = {
 			unit,
 			date: this.props.moment().format( 'YYYY-MM-DD' ),
 			quantity: '30'
 		};
-	}
-	render() {
-		const { siteId, unit } = this.props;
 		return (
 			<Main className="woocommerce stats" wideLayout={ true }>
-				{ siteId && <QuerySiteStats
-					siteId={ siteId }
-					statType="statsOrders"
-					query={ this.createQuery( unit ) }
-				/> }
 				<StatsNavigation unit={ unit } type="orders" />
+				<StatsChart siteId={ siteId } query={ chartQuery } />
 			</Main>
 		);
 	}
