@@ -4,10 +4,7 @@
 import error from './error-reducer';
 import productCategories from './product-categories/reducer';
 import shippingZones from './shipping-zones/reducer';
-import {
-	SERIALIZE,
-	DESERIALIZE,
-} from 'state/action-types';
+import { withoutPersistence } from 'state/utils';
 
 const initialState = {};
 
@@ -17,15 +14,10 @@ const handlers = {
 	...error,
 };
 
-export default function( state = initialState, action ) {
+export default withoutPersistence( ( state = initialState, action ) => {
 	const { type, payload } = action;
 	const { siteId } = payload || {};
 	const handler = handlers[ type ];
-
-	// Necessary to ensure this data is not persisted.
-	if ( type === SERIALIZE || type === DESERIALIZE ) {
-		return initialState;
-	}
 
 	if ( handler ) {
 		if ( ! siteId ) {
@@ -39,5 +31,4 @@ export default function( state = initialState, action ) {
 	}
 
 	return state;
-}
-
+} );
