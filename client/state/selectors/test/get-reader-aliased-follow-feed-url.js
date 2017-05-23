@@ -11,10 +11,10 @@ import { getReaderAliasedFollowFeedUrl } from '../';
 const site1UrlKey = 'discover.wordpress.com';
 const site1Aliases = [ 'site1 alias!', 'site1 second alias!' ];
 
-const siteA = 'siteA/feed';
-const siteB = 'siteB/rss';
-const siteC = 'siteC/rss.xml';
-const siteD = 'siteD/atom/feed';
+const siteA = 'sitea/feed';
+const siteB = 'siteb/rss';
+const siteC = 'sitec/rss.xml';
+const siteD = 'sited/atom/feed';
 
 describe( 'getReaderAliasedFollowFeedUrl()', () => {
 	const state = {
