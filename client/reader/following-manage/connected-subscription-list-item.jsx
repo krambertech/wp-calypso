@@ -22,34 +22,25 @@ class ConnectedSubscriptionListItem extends React.Component {
 		feedId: PropTypes.number,
 		siteId: PropTypes.number,
 		onLoad: PropTypes.func,
-		onRender: PropTypes.func,
 		showEmailSettings: PropTypes.bool,
 		showLastUpdatedDate: PropTypes.bool,
 		isFollowing: PropTypes.bool,
 		followSource: PropTypes.string,
-		railcar: PropTypes.object,
 	};
 
 	static defaultProps = {
 		onLoad: noop,
-		onRender: noop,
 		showEmailSettings: true,
 		showLastUpdatedDate: true,
 	};
 
 	componentDidMount() {
 		this.props.onLoad();
-		if ( this.props.railcar ) {
-			this.props.onRender( this.props.railcar );
-		}
 	}
 
 	componentDidUpdate( prevProps ) {
 		if ( this.props !== prevProps ) {
 			this.props.onLoad();
-		}
-		if ( this.props.railcar && this.props.railcar !== prevProps.railcar ) {
-			this.props.onRender( this.props.railcar );
 		}
 	}
 
@@ -65,7 +56,6 @@ class ConnectedSubscriptionListItem extends React.Component {
 			showLastUpdatedDate,
 			isFollowing,
 			followSource,
-			railcar,
 		} = this.props;
 		const isEmailBlocked = userSettings.getSetting( 'subscription_delivery_email_blocked' );
 
@@ -81,7 +71,6 @@ class ConnectedSubscriptionListItem extends React.Component {
 				showLastUpdatedDate={ showLastUpdatedDate }
 				isFollowing={ isFollowing }
 				followSource={ followSource }
-				railcar={ railcar }
 			/>
 		);
 	}
