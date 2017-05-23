@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import QuerySiteStats from 'components/data/query-site-stats';
 import { getSiteStatsNormalizedData, isRequestingSiteStatsForQuery } from 'state/stats/lists/selectors';
 
-const StatsChart = ( { siteId, query, data } ) => {
+const StatsChart = ( { siteId, query } ) => {
 	return (
 		<div>
 			{ siteId && <QuerySiteStats
@@ -18,9 +18,6 @@ const StatsChart = ( { siteId, query, data } ) => {
 				statType="statsOrders"
 				query={ query }
 			/> }
-			{ data && data.map( ( d, i ) => (
-				<div key={ i } >{ `${ d.labelDay } Sales: ${ d.total_sales }` }</div>
-			) ) }
 		</div>
 	);
 };
