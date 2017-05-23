@@ -8,7 +8,7 @@ import { find, includes, some } from 'lodash';
  */
 import { prepareComparableUrl } from 'state/reader/follows/utils';
 
-const commonExtensions = [ 'rss', 'rss.xml', 'feed', 'atom/feed' ];
+export const commonExtensions = [ 'rss', 'rss.xml', 'feed', 'atom/feed' ];
 
 /**
  * This selector will usually return the same feedUrl passed in.
@@ -33,7 +33,7 @@ export default function getReaderAliasedFollowFeedUrl( state, feedUrl ) {
 		state.reader.follows.items,
 		( follow, key ) =>
 			includes( follow.alias_feed_URLs, urlKey ) ||
-			some( commonExtensions, ext => `${ urlKey }/${ ext }` === key )
+			some( commonExtensions, ext => `${ feedUrl }/${ ext }` === key )
 	);
 	if ( foundAlias ) {
 		return foundAlias.feed_URL;
