@@ -60,12 +60,13 @@ export class GooglePhotos extends SharingService {
 		}
 	}
 
-	/**
+	/*
 	 * We render a custom logo here instead of using SocialLogos as we need a full colour logo and SocialLogos currently strips all colour
 	 * When SocialLogos supports colour logos then we can remove this and use the default renderLogo() in SharingService
 	 */
 	renderLogo() {
 		return (
+			/* eslint-disable wpcalypso/jsx-classname-namespace */
 			<img className="sharing-service__logo" src="/calypso/images/sharing/google-photos-logo.svg" width="48" height="48" />
 		);
 	}
