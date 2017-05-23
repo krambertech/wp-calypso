@@ -46,7 +46,7 @@ import { retryOnFailure } from './retry-on-failure';
 
 /** @type {InboundProcessor[]} */
 const inboundChain = [
-	retryOnFailure,
+	retryOnFailure(),
 	applyDuplicatesHandlers,
 ];
 
