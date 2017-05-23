@@ -14,7 +14,7 @@ const site1Aliases = [ 'site1 alias!', 'site1 second alias!' ];
 const siteA = 'sitea/feed';
 const siteB = 'siteb/rss';
 const siteC = 'sitec/rss.xml';
-const siteD = 'sited/atom/feed';
+const siteD = 'sited/feed/atom';
 
 describe( 'getReaderAliasedFollowFeedUrl()', () => {
 	const state = {

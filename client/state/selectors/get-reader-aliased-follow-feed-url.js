@@ -8,7 +8,7 @@ import { find, includes, some } from 'lodash';
  */
 import { prepareComparableUrl } from 'state/reader/follows/utils';
 
-export const commonExtensions = [ 'rss', 'rss.xml', 'feed', 'atom/feed', 'atom.xml', 'atom' ];
+export const commonExtensions = [ 'rss', 'rss.xml', 'feed', 'feed/atom', 'atom.xml', 'atom' ];
 
 /**
  * This selector will usually return the same feedUrl passed in.
